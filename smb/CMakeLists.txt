@@ -6,6 +6,9 @@ add_definitions(-DTRANSLATION_DOMAIN=\"kio5_smb\")
 include(CheckIncludeFile)
 set(CMAKE_AUTOMAKE ON)
 
+# exists in Samba >= 4.10 (since commit 0dae4e2f5c65)
+CHECK_FUNCTION_EXISTS(smbc_setOptionProtocols HAVE_SMBC_SETOPTIONPROTOCOLS)
+
 if(NOT WIN32)
 check_include_file(utime.h HAVE_UTIME_H)
 
