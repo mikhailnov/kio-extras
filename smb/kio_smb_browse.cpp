@@ -195,6 +195,16 @@ QUrl SMBSlave::checkURL(const QUrl& kurl) const
         }
     }
     if (surl == QLatin1String("smb://")) {
+#ifdef HAVE_SMBC_SETOPTIONPROTOCOLS
+		// Samba 4.8 changed default 'client max protocol' from NT1 to SMB3,
+		// together with fixes of Badlock, it broke browsing smb:// with
+		// default settings, because only NT1 (SMB1) protocol can browse network.
+		// Samba 4.10 made it possible to set min/max protocol version
+		// via libsmbclient API.
+		SMBCCTX *smb_context = smbc_set_context(nullptr);
+		qCDebug(KIO_SMB) << "Setting client max protocol = NT1 for browsing SMB network";
+		smbc_setOptionProtocols(smb_context, "NT1", "NT1");
+#endif
         return kurl; //unchanged
     }
 
